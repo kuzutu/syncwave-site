@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncWave Pro — The DJ library manager for Mac</title>
+<meta name="description" content="Organize, analyze and export your DJ library. Harmonic key + BPM analysis, cue & loop editor, auto set builder, and one-click export to Rekordbox, Serato and Mixed In Key.">
+<style>
+  :root{
+    --bg:#f4f7f6; --card:#ffffff; --ink:#0f1b16; --muted:#5b6b64;
+    --line:#e2e9e5; --accent:#0ea27a; --accent-dark:#0b7d5e; --blue:#2563eb;
+    --radius:14px; --max:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  .btn{display:inline-block;background:var(--accent);color:#fff;font-weight:600;
+       padding:14px 26px;border-radius:10px;font-size:16px;transition:.15s;border:none;cursor:pointer}
+  .btn:hover{background:var(--accent-dark)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn.ghost:hover{background:#eef3f1}
+
+  nav{position:sticky;top:0;background:rgba(244,247,246,.85);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);z-index:10}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:700;font-size:19px;letter-spacing:-.3px}
+  .logo span{color:var(--accent)}
+  nav .links{display:flex;gap:26px;align-items:center;font-size:15px;color:var(--muted)}
+  nav .links a:hover{color:var(--ink)}
+  @media(max-width:680px){nav .links a:not(.btn){display:none}}
+
+  header{padding:72px 0 40px;text-align:center}
+  .pill{display:inline-block;background:#e6f5ef;color:var(--accent-dark);font-size:13px;
+        font-weight:600;padding:6px 14px;border-radius:999px;margin-bottom:22px}
+  h1{font-size:46px;line-height:1.1;letter-spacing:-1px;max-width:760px;margin:0 auto 18px}
+  .sub{font-size:19px;color:var(--muted);max-width:600px;margin:0 auto 30px}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .micro{margin-top:16px;font-size:13px;color:var(--muted)}
+
+  .shot{max-width:920px;margin:48px auto 0;background:var(--card);border:1px solid var(--line);
+        border-radius:var(--radius);overflow:hidden;box-shadow:0 24px 60px rgba(15,27,22,.08)}
+  .shot .bar{height:38px;background:#eef3f1;display:flex;align-items:center;gap:7px;padding:0 14px;border-bottom:1px solid var(--line)}
+  .shot .dot{width:11px;height:11px;border-radius:50%}
+  .shot .ph{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+            color:var(--muted);font-size:15px;background:repeating-linear-gradient(45deg,#fafcfb,#fafcfb 18px,#f1f5f3 18px,#f1f5f3 36px)}
+
+  section{padding:60px 0}
+  .eyebrow{text-align:center;color:var(--accent);font-weight:600;font-size:14px;letter-spacing:.5px;text-transform:uppercase}
+  h2{text-align:center;font-size:32px;letter-spacing:-.5px;margin:8px auto 8px;max-width:640px}
+  .lead{text-align:center;color:var(--muted);max-width:560px;margin:0 auto 40px}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  .feat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .feat .ic{width:42px;height:42px;border-radius:10px;background:#e6f5ef;display:flex;
+            align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
+  .feat h3{font-size:17px;margin-bottom:6px}
+  .feat p{font-size:14.5px;color:var(--muted)}
+
+  .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+  @media(max-width:820px){.gal{grid-template-columns:1fr}}
+  .gal figure{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .gal img{width:100%;display:block}
+  .gal figcaption{padding:11px 14px;font-size:13.5px;color:var(--muted)}
+
+  .exports{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+           padding:32px;text-align:center}
+  .exports .row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:18px}
+  .exports .tag{border:1px solid var(--line);border-radius:10px;padding:12px 20px;font-weight:600;font-size:15px}
+
+  .price{max-width:420px;margin:0 auto;background:var(--card);border:2px solid var(--accent);
+         border-radius:18px;padding:36px;text-align:center}
+  .price .amt{font-size:52px;font-weight:700;letter-spacing:-1.5px}
+  .price .amt small{font-size:18px;color:var(--muted);font-weight:500}
+  .price ul{list-style:none;text-align:left;margin:24px 0;display:inline-block}
+  .price li{padding:7px 0;color:var(--ink);font-size:15px}
+  .price li::before{content:"✓";color:var(--accent);font-weight:700;margin-right:10px}
+
+  .faq{max-width:720px;margin:0 auto}
+  .faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:12px}
+  .faq summary{font-weight:600;cursor:pointer;font-size:16px}
+  .faq p{color:var(--muted);margin-top:10px;font-size:15px}
+
+  footer{border-top:1px solid var(--line);padding:36px 0;text-align:center;color:var(--muted);font-size:14px}
+  footer a{color:var(--accent-dark);font-weight:600}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="logo">Sync<span>Wave</span> Pro</div>
+  <div class="links">
+    <a href="#features">Features</a>
+    <a href="#exports">Exports</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#buy" class="btn" style="padding:9px 18px;font-size:14px">Get it</a>
+  </div>
+</div></nav>
+
+<header><div class="wrap">
+  <span class="pill">macOS · code-signed &amp; notarized</span>
+  <h1>Your entire DJ library, finally under control.</h1>
+  <p class="sub">Analyze, organize and export thousands of tracks in one place — harmonic keys, beat-accurate grids, cues, loops, and an Auto DJ that mixes your queue beat-matched. Built for working DJs, not spreadsheets.</p>
+  <div class="cta-row">
+    <a href="#buy" class="btn">Buy SyncWave Pro</a>
+    <a href="#features" class="btn ghost">See features</a>
+  </div>
+  <p class="micro">One-time purchase · free to try · exports unlock with your license key</p>
+
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span></div>
+    <img src="img/hero.webp" alt="SyncWave Pro — library view with harmonic assistant"
+         style="width:100%;display:block">
+    <div class="ph" style="display:none"></div>
+  </div>
+</div></header>
+
+<section id="features"><div class="wrap">
+  <p class="eyebrow">Everything in one app</p>
+  <h2>Built for the way you actually mix</h2>
+  <p class="lead">From a messy folder of thousands of files to a tour-ready, harmonically organized library.</p>
+  <div class="grid">
+    <div class="feat"><div class="ic">🎧</div><h3>Auto DJ — beat-matched</h3><p>Queue your tracks and lean back: the playing track ends naturally while the next one rises in on the beat — BPMs matched automatically, sample-accurate start.</p></div>
+    <div class="feat"><div class="ic">🌊</div><h3>Pro 3-band waveform</h3><p>Bass in blue, mids in amber, highs sparkling white — with a beatgrid that sits on the <em>actual</em> hits, downbeats drawn bold. Quiet intros stay visible.</p></div>
+    <div class="feat"><div class="ic">🎯</div><h3>Cue &amp; loop editor</h3><p>8 colored cues, A-B loops, ±4/8/16/32 bar jumps, millisecond grid nudge and one-tap save.</p></div>
+    <div class="feat"><div class="ic">🎹</div><h3>Harmonic analysis</h3><p>Automatic Camelot key + BPM + energy. A neural beat engine measures BPM beat-by-beat for grids you can trust.</p></div>
+    <div class="feat"><div class="ic">🏗️</div><h3>Set builder &amp; Auto-Mix</h3><p>Draft harmonically-chained sets, check the energy curve, then render the whole playlist as one continuous WAV mix.</p></div>
+    <div class="feat"><div class="ic">⚡</div><h3>Fast, even at 13k+ tracks</h3><p>A real SQLite-backed library that stays fast where folders and spreadsheets crawl.</p></div>
+    <div class="feat"><div class="ic">🔎</div><h3>Smart search &amp; cleanup</h3><p>Query like a pro: <code>key:8a+</code>, <code>bpm:124-128</code> — plus smart duplicate, dead-link and genre cleanup tools.</p></div>
+    <div class="feat"><div class="ic">✦</div><h3>AI stem splitter</h3><p>Separate vocals, drums, bass and melody on demand for edits and acapella mixing.</p></div>
+    <div class="feat"><div class="ic">🔬</div><h3>Analysis lab</h3><p>Chord detect, tempo map, LUFS loudness meter, BPM verify, mix suggestions and a transition advisor — built in, not add-ons.</p></div>
+  </div>
+  <div class="gal">
+    <figure><img src="img/cue_editor.webp" alt="Cue editor with waveform and 8 colored cue pads" loading="lazy">
+      <figcaption><strong>Cue Editor</strong> — waveform, beatgrid, 8 colored cues, bar jumps.</figcaption></figure>
+    <figure><img src="img/mix_suggest.webp" alt="Mix suggestions list with key and BPM compatible tracks" loading="lazy">
+      <figcaption><strong>Mix Suggest</strong> — key + BPM compatible "what to play next" ideas.</figcaption></figure>
+    <figure><img src="img/stem_splitter.webp" alt="AI stem splitter separating vocals, drums, bass and other" loading="lazy">
+      <figcaption><strong>Stem Splitter</strong> — vocals, drums, bass and melody on demand.</figcaption></figure>
+  </div>
+</div></section>
+
+<section id="exports" style="padding-top:20px"><div class="wrap">
+  <div class="exports">
+    <p class="eyebrow">Plays nice with your gear</p>
+    <h2 style="margin-top:6px">Export anywhere, no lock-in</h2>
+    <p class="lead" style="margin-bottom:0">Keep your cues and loops when you move between platforms.</p>
+    <div class="row">
+      <span class="tag">Rekordbox XML</span>
+      <span class="tag">Serato (cue + loop)</span>
+      <span class="tag">Mixed In Key</span>
+      <span class="tag">M3U8</span>
+      <span class="tag">USB export</span>
+    </div>
+  </div>
+</div></section>
+
+<section id="pricing"><div class="wrap">
+  <p class="eyebrow">Pricing</p>
+  <h2>Free. Pay what you want.</h2>
+  <p class="lead">No subscription, no catch. Download free — tip what you think it's worth if it helps your sets.</p>
+  <div class="price" id="buy">
+    <div class="amt">Free <small>· pay what you want</small></div>
+    <ul>
+      <li>Full library, analysis, cues &amp; loops</li>
+      <li>Auto set builder &amp; smart search</li>
+      <li>All exports (Rekordbox, Serato, MIK, USB)</li>
+      <li>AI stem splitter</li>
+      <li>Free updates · use on your own Macs</li>
+    </ul>
+    <a href="https://selcukkuzus.gumroad.com/l/djlibrary" class="btn" style="width:100%">Download free</a>
+    <p class="micro">Via Gumroad · instant license key · set your own price ($0 ok)</p>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <p class="eyebrow">Good to know</p>
+  <h2>FAQ</h2>
+  <div class="faq" style="margin-top:30px">
+    <details><summary>Which Macs are supported?</summary><p>macOS 12 (Monterey) and later, Apple Silicon and Intel. The app is code-signed and notarized by Apple, so it opens without scary warnings.</p></details>
+    <details><summary>Is there a free trial?</summary><p>Yes. Use the full app for free — analysis, organizing, cues and loops all work. A license key unlocks the export features (Rekordbox, Serato, MIK, USB).</p></details>
+    <details><summary>How does the stem splitter work?</summary><p>It uses an AI separation engine that downloads automatically the first time you use it (one-time, a few minutes). After that, splitting runs locally on your Mac.</p></details>
+    <details><summary>Will my cues and loops transfer to Rekordbox / Serato?</summary><p>Yes — exports include cue points and loops so you keep your prep when switching platforms.</p></details>
+    <details><summary>Refunds?</summary><p>Because it ships with a free trial, try before you buy. If something genuinely doesn't work, reach out and we'll make it right.</p></details>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  SyncWave Pro · <a href="mailto:djlibrary.support@gmail.com">Support</a><br>
+  © 2026 · macOS DJ library manager
+</div></footer>
+
+</body>
+</html>
